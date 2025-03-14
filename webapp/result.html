@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Result - BlockchainKYC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-[Inter]">
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="index.html" class="flex items-center">
+                            <i class="fas fa-link text-blue-600 text-2xl mr-2"></i>
+                            <span class="text-xl font-semibold">BlockchainKYC</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <!-- Success Message -->
+                <div class="rounded-md bg-green-50 p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-green-800">Success</h3>
+                            <p class="mt-2 text-sm text-green-700">KYC verification successful! Your information has been securely recorded on the blockchain.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KYC Details -->
+                <div class="border-b border-gray-200 pb-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">KYC Details</h2>
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2" id="kycDetails">
+                        <!-- Will be populated by JavaScript -->
+                    </dl>
+                </div>
+
+                <!-- Blockchain Details -->
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Blockchain Record</h3>
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-6" id="blockchainDetails">
+                        <!-- Will be populated by JavaScript -->
+                    </dl>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="mt-8 flex justify-between">
+                    <a href="index.html" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-home mr-2"></i>
+                        Back to Home
+                    </a>
+                    <a href="kyc.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <i class="fas fa-plus mr-2"></i>
+                        New KYC Application
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Retrieve KYC data from localStorage
+            const blockData = JSON.parse(localStorage.getItem('kycData'));
+            
+            if (!blockData) {
+                window.location.href = 'kyc.html';
+                return;
+            }
+
+            // Format currency
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+
+            // Populate KYC Details
+            const kycDetails = document.getElementById('kycDetails');
+            kycDetails.innerHTML = `
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${blockData.data.fullName}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Date of Birth</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${new Date(blockData.data.dateOfBirth).toLocaleDateString()}</dd>
+                </div>
+                <div class="sm:col-span-2">
+                    <dt class="text-sm font-medium text-gray-500">Address</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${blockData.data.address}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Annual Income</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${formatter.format(blockData.data.income)}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Allocated Credit</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${formatter.format(blockData.data.allocatedCredit)}</dd>
+                </div>
+            `;
+
+            // Populate Blockchain Details
+            const blockchainDetails = document.getElementById('blockchainDetails');
+            blockchainDetails.innerHTML = `
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Transaction Timestamp</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${new Date(blockData.timestamp).toLocaleString()}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Block Hash</dt>
+                    <dd class="mt-1 text-sm font-mono text-gray-900 break-all">${blockData.hash}</dd>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
